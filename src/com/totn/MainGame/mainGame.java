@@ -21,6 +21,7 @@ public class mainGame
 		beginInput();
 		setupPlayers();
 		beginIntro();
+		dice.coinToss();
 		
 	//	Clear the terminal for the ending of the game
 		clearTerm();
@@ -30,7 +31,7 @@ public class mainGame
 		messages.slowPrint("Welcome to the world of Magic: TG, Players" + br);
 		messages.slowPrint("How many players? (2-4) ");
 		players = user_input.nextInt();
-			user_input.nextLine();
+		user_input.nextLine();
 		System.out.println("");
 	}
 	public static void clearTerm()
@@ -47,30 +48,6 @@ public class mainGame
 		{	
 			messages.slowPrint("Player " + i + "'s Name: ");
 			playerList[i] = user_input.nextLine();
-			
-		/*
-			Can be used if you prefer it to say "One" instead of "1"
-				,but for simplicity and speed I choose to narrow it 
-				to two lines and leave the extra lines for future desires. 
-
-			if(i==1)
-			{
-				messages.slowPrint("Player One's Name: ");
-				players[i] = user_input.nextLine();
-			} else if(i==2)
-			{
-				messages.slowPrint("Player Two's Name: ");
-				players[i] = user_input.nextLine();
-			} else if(i==3)
-			{
-				messages.slowPrint("Player Three's Name: ");
-				players[i] = user_input.nextLine();
-			} else if(i==4)
-			{
-				messages.slowPrint("Player Four's Name: ");	
-				players[i] = user_input.nextLine();
-			}
-		*/
 		}
 		messages.slowPrint(br);
 		messages.slowPrint("Welcome to the game " + messages.playerList());
@@ -89,7 +66,7 @@ public class mainGame
 	{
 		messages.welcomeSpeech();
 		int beginner = dice.diceToss();
-		messages.slowPrint("Player " + beginner + " goes FIRST");
+		messages.slowPrint("Player " + beginner + " goes FIRST" + br);
 	}
 	public static void beginTurn()
 	{

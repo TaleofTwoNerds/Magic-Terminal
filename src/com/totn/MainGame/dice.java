@@ -2,6 +2,39 @@ public class dice
 {
 	public static String br = System.getProperty("line.separator");
 
+	public static int singleDiceToss(int dieSides)
+	{
+		int value;
+		value = (int)(Math.random() * dieSides + 1);
+		return value;
+	}
+	public static boolean coinToss()
+	{
+		boolean value;
+		
+		System.out.println("Choose your side! ");
+		String choice = mainGame.user_input.nextLine();
+		
+		String[] face = new String[2];
+		face[0] = "Heads";
+		face[1] = "Tales";
+		int side = (int)(Math.random() * (100));
+		if(side>50)
+		{
+			side = 0;
+		} else {
+			side = 1;
+		}
+		System.out.println(side);
+		if((choice.startsWith("H")||choice.startsWith("h")) && side==0) {
+			value = true;
+		} else if((choice.startsWith("T")||choice.startsWith("t")) && side==1){
+			value = true;
+		} else {
+			value = false;
+		}
+		return value;
+	}
 	public static int diceToss()
 	{
 		messages.slowPrint("The dice have been cast!"+ br);
