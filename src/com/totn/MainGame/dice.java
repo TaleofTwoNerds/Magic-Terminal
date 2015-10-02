@@ -2,12 +2,6 @@ public class dice
 {
 	public static String br = System.getProperty("line.separator");
 
-	public static int singleDiceToss(int dieSides)
-	{
-		int value;
-		value = (int)(Math.random() * dieSides + 1);
-		return value;
-	}
 	public static boolean coinToss()
 	{
 		boolean value;
@@ -35,6 +29,14 @@ public class dice
 		}
 		return value;
 	}
+	
+	public static int singleDiceToss(int dieSides)
+	{
+		int value;
+		value = (int)(Math.random() * dieSides + 1);
+		return value;
+	}
+	
 	public static int diceToss()
 	{
 		messages.slowPrint("The dice have been cast!"+ br);

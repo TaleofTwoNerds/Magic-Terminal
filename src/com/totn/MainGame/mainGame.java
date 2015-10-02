@@ -8,20 +8,25 @@ public class mainGame
 	
 	public static String name;
 	public static String[] playerList = new String[5];
-	public static int players = 4,turn,textSpeed=40;
+	public static int[] playerHP = new int[5];
+	public static int players = 4,playersTurn = 1,turn,textSpeed=40;
 	public static String br = System.getProperty("line.separator");
-		
+	public static boolean isRunning = true;
+	
 	static Scanner user_input = new Scanner(System.in);
 	
 	public static void main(String[] args) throws InterruptedException
 	{
 	//	Clear terminal and begin the game
-		clearTerm();
-		messages.creatorInfo();
+	//	clearTerm();
+	//	messages.creatorInfo();
 		beginInput();
 		setupPlayers();
 		beginIntro();
-		dice.coinToss();
+		while(isRunning)
+		{
+			playerTurn(playersTurn);
+		}
 		
 	//	Clear the terminal for the ending of the game
 		clearTerm();
@@ -46,6 +51,7 @@ public class mainGame
 		int i;
 		for(i=1;i<=players;i++)
 		{	
+			playerHP[i] = 20;
 			messages.slowPrint("Player " + i + "'s Name: ");
 			playerList[i] = user_input.nextLine();
 		}
@@ -66,11 +72,13 @@ public class mainGame
 	{
 		messages.welcomeSpeech();
 		int beginner = dice.diceToss();
-		messages.slowPrint("Player " + beginner + " goes FIRST" + br);
+		playersTurn = beginner;
+		messages.slowPrint(playerList[beginner] + " goes FIRST" + br);
 	}
-	public static void beginTurn()
+	public static void playerTurn(int who)
 	{
-
+	// 	Who is the ID of the player whose turn it currently is
+		commands.drawCard(who);
 	}
 	public static void wait(int time)
 	{
