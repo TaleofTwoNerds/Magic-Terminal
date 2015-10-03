@@ -17,9 +17,9 @@ public class mainGame
 	
 	public static void main(String[] args) throws InterruptedException
 	{
-	//	Clear terminal and begin the game
-	//	clearTerm();
-	//	messages.creatorInfo();
+//		Clear terminal and begin the game
+		clearTerm();
+		messages.creatorInfo();
 		beginInput();
 		setupPlayers();
 		beginIntro();
