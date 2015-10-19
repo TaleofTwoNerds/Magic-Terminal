@@ -4,28 +4,27 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class mainGame 
-{ 
-	
-	public static String name;
-	public static String[] playerList = new String[5];
+{ 	
+	public static Player[] player = new Player[10];
 	public static int[] playerHP = new int[5];
-	public static int players = 4,playersTurn = 1,turn,textSpeed=40;
+	public static int players=4,activePlayer = 1,turn=0,
+				textSpeed=40,startingLife=20;
 	public static String br = System.getProperty("line.separator");
-	public static boolean isRunning = true;
+	public static boolean isRunning=true,cardDrawn=false;
 	
 	static Scanner user_input = new Scanner(System.in);
 	
 	public static void main(String[] args) throws InterruptedException
 	{
-//		Clear terminal and begin the game
+	//	Clear terminal and begin the game
 		clearTerm();
-		messages.creatorInfo();
+	//	messages.creatorInfo();
 		beginInput();
 		setupPlayers();
-		beginIntro();
+	//	beginIntro();
 		while(isRunning)
 		{
-			playerTurn(playersTurn);
+			playerTurn();
 		}
 		
 	//	Clear the terminal for the ending of the game
@@ -34,13 +33,26 @@ public class mainGame
 	public static void beginInput()
 	{
 		messages.slowPrint("Welcome to the world of Magic: TG, Players" + br);
-		messages.slowPrint("How many players? (2-4) ");
-		players = user_input.nextInt();
+		while(true)
+		{
+			messages.slowPrint("How many players? (2-4) ");
+			players = user_input.nextInt();
+			if(players <= 1)
+			{
+				messages.slowPrint("You cannot have less that 2 players"+br);
+			} else if (players >= 4) 
+			{
+				messages.slowPrint("You cannot have more than 2 players"+br);
+			} else {
+				break;
+			}
+		}
 		user_input.nextLine();
 		System.out.println("");
 	}
 	public static void clearTerm()
 	{
+		//	Clear the terminal
 		final String ANSI_CLS = "\u001b[2J";
         final String ANSI_HOME = "\u001b[H";
         messages.slowPrint(ANSI_CLS + ANSI_HOME);
@@ -48,18 +60,18 @@ public class mainGame
 	}
 	public static void setupPlayers()
 	{
+		//	Setup the players in the game and put them into the array
 		int i;
 		for(i=1;i<=players;i++)
 		{	
-			playerHP[i] = 20;
 			messages.slowPrint("Player " + i + "'s Name: ");
-			playerList[i] = user_input.nextLine();
+			player[i] = new Player(user_input.nextLine(),startingLife);
 		}
 		messages.slowPrint(br);
 		messages.slowPrint("Welcome to the game " + messages.playerList());
 		messages.slowPrint(br + br + "Are these names correct (Yes/No)? ");
-		String correct = user_input.nextLine();
-		if(correct.startsWith("Y")||correct.startsWith("y"))
+		
+		if(user_input.nextLine().toLowerCase().startsWith("y"))
 		{
 		
 		}
@@ -72,13 +84,20 @@ public class mainGame
 	{
 		messages.welcomeSpeech();
 		int beginner = dice.diceToss();
-		playersTurn = beginner;
-		messages.slowPrint(playerList[beginner] + " goes FIRST" + br);
+		activePlayer = beginner;
+		messages.slowPrint(player[beginner].getName() + " goes FIRST" + br);
+		
+		clearTerm();
+		messages.slowPrint(player[activePlayer].getName() + "'s turn" + br);
 	}
-	public static void playerTurn(int who)
+	public static void playerTurn()
 	{
+		
 	// 	Who is the ID of the player whose turn it currently is
-		commands.drawCard(who);
+		if(!cardDrawn){commands.drawCard(activePlayer);}
+		System.out.print("> ");
+		String action = user_input.nextLine();
+		commands.checkForCommand(action);
 	}
 	public static void wait(int time)
 	{
@@ -89,4 +108,12 @@ public class mainGame
    			Thread.currentThread().interrupt(); 
 		}
 	}
-}
+	
+	public static class Player extends AbstractPlayer
+	{
+		public Player(String name, double HP)
+		{
+			super(name, HP);
+		}
+	}
+}	

@@ -56,19 +56,19 @@ public class messages extends mainGame
 		String value=null;
 		if (players==2)
 		{
-			value = playerList[1] + " and " 
-				+ playerList[2];
+			value = player[1].getName() + " and " 
+				+ player[2].getName();
 		} else if (players==3)
 		{
-			value = playerList[1] + ", " 
-				+ playerList[2] + ", and " 
-				+ playerList[3];
+			value = player[1].getName() + ", " 
+				+ player[2].getName() + ", and " 
+				+ player[3].getName();
 		} else if (players==4)
 		{
-			value = playerList[1] + ", " 
-				+ playerList[2] + ", " 
-				+ playerList[3] + ", and " 
-				+ playerList[4];
+			value = player[1].getName() + ", " 
+				+ player[2].getName() + ", " 
+				+ player[3].getName() + ", and " 
+				+ player[4].getName();
 		}
 		return value;
 	}
