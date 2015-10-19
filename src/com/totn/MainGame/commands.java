@@ -1,14 +1,24 @@
 public class commands extends mainGame
 {
 	public static boolean landCasted=false;
+	public static String[] attackerName = new String[10];
+	public static int[] attackerID = new int[10];
+	public static int attackerNum;
+	public static boolean attacking = true;
 	
-	public static void displayHand(int player)
+	public static void displayHand(int playerID)
 	{
 		//	Display the current player's hand and what they have.
 		//	Can be used for cards which have ability "Reveal Hand"
+		System.out.println("You currently have "+player[playerID].getHandSize()+" cards in your hand");
+		for(int i=0;i<player[playerID].getHandSize();i++)
+		{
+			messages.slowPrint(player[playerID].getHand(i)+br);
+		}
 	}
 	public static void attack(String target)
 	{
+		attacking=true;
 		int targetID = 0;
 		//	Find player ID from String
 		for(int i=1;i<=players;i++)
@@ -18,27 +28,83 @@ public class commands extends mainGame
 				targetID = i;
 			}
 		}
-		//	Declare attackers
 		
+		while(true)
+		{
+			while(true)
+			{
+			//	Declare number of attackers
+				messages.slowPrint("How many creatures do you attack with?: ");
+				attackerNum = user_input.nextInt();
+				if(attackerNum<=9){break;}
+				else{messages.slowPrint("Attacking must contain between 1-9 attackers.");}
+			}
+			user_input.nextLine();
+			for(int i=1;i<=attackerNum;i++)
+			{
+				while(true)
+				{
+				//	Declare attackers
+					messages.slowPrint("Attacker " + i + ": ");
+					attackerName[i]=user_input.nextLine();
+					if(attackerName[i].toLowerCase().startsWith("end"))
+					{
+					//	If a player types end while attacking it will 
+					//	break the loop and stop the attack.
+					
+						attacking=false;
+						break;
+					}
+					attackerID[i]=cardData.cardToID(attackerName[i]);
+					if(attackerID[i]==0)
+					{
+						messages.slowPrint("That creature doesn't exist!"+br);
+					} else {
+						break;
+					}
+				}
+				if(!attacking){break;}
+			}
+			if(!attacking){break;}
+			messages.slowPrint("You targeted: " + player[targetID].getName() + " with "+br);
+			for(int i=1;i<=attackerNum;i++)
+			{
+				messages.slowPrint(attackerName[i]+" ("+card[attackerID[i]].getPower()+"/"+card[attackerID[i]].getToughness()+")"+br);
+			}
+			messages.slowPrint(br+"Are these creatures correct (Yes/No)? ");
+		
+			if(user_input.nextLine().toLowerCase().startsWith("y"))
+			{
+				break;	
+			}
+		}
 		//	Attack target player
-		messages.slowPrint("You targeted: (" + targetID + "): " + target);
-		defend();
+		//	But make sure that player is still attacking.
+		//	This gives the player the chance to back out when
+		//	Declaring which creatures to attack with.
+		
+		if(attacking){defend(player[targetID]);}
 	}
-	public static void defend() 
+	public static void defend(Player defender) 
 	{
 		clearTerm();
-		messages.slowPrint(player[activePlayer].getName()+" attacked you with:"+br);
+		messages.slowPrint(defender.getName()+"'s chance to defend"+br);
+		messages.slowPrint(player[activePlayer].getName()+" is attacking you with:"+br);
+		for(int i=1;i<=attackerNum;i++)
+		{
+			messages.slowPrint(attackerName[i]+" ("+card[attackerID[i]].getPower()+"/"+card[attackerID[i]].getToughness()+")"+br);
+		}
 		messages.slowPrint("How do you respond?"+br);
 		messages.slowPrint("> ");
 		String defense = user_input.nextLine();
-		messages.slowPrint("You " + defense);
+		messages.slowPrint("You " + defense +br);
 	}
-	public static void drawCard(int player)
+	public static void drawCard(int playerID)
 	{
 		//	Draw a card. You have to decide whether to make it automatic
 		//	Or to make it manual.
 		// 	This (^) should be added to the settings page later in game dev
-		
+		player[playerID].addCard(card[dice.randomCard()].getName());
 		messages.slowPrint("You have drawn a card" + br);
 		cardDrawn=true;
 	}
@@ -55,6 +121,52 @@ public class commands extends mainGame
 	}
 	public static void endTurn()
 	{
+		String disTarget;
+		
+		//	Make sure you have less than 7 cards
+		if(player[activePlayer].getHandSize()>=8)
+		{
+			messages.slowPrint("You have too many cards in your hand!"+br);
+			messages.slowPrint("Select a card to remove!"+br+br);
+			displayHand(activePlayer);
+			while(true)
+			{
+				System.out.print("> ");
+				disTarget = user_input.nextLine();
+				int discard = cardData.cardToID(disTarget);
+				if(discard==0)
+				{
+					messages.slowPrint("That card doesn't exist!"+br);
+				} else {
+					boolean possesion=false;
+					for(int i=1;i<player[activePlayer].getHandSize();i++)
+					{
+						System.out.println(player[activePlayer].getHand(i));
+						if(cardData.cardToID(player[activePlayer].getHand(i))==discard)
+						{
+							possesion=true;
+							break;
+						} else {
+							possesion=false;
+						}
+					}
+					if(possesion)
+					{
+						break;
+					} else {
+						messages.slowPrint("You don't own that card!"+br);
+					}
+				}
+			}
+			player[activePlayer].removeCard(disTarget);
+			messages.slowPrint("You've removed a "+disTarget+br);
+			wait(1);
+		}
+		
+		messages.slowPrint("End of turn"+br);
+		messages.slowPrint("Current Life Total: "+player[activePlayer].getHP());
+		wait(1);
+		
 		//	Give priority to the next player going clockwise
 		if(activePlayer==players) 
 		{
@@ -84,21 +196,24 @@ public class commands extends mainGame
 		if(commandText.toLowerCase().startsWith("end"))
 		{
 			endTurn();
-		} else if(commandText.toLowerCase().startsWith("cast land")) {
+		} else if(commandText.toLowerCase().startsWith("cast land")) 
+		{
 			if(landCasted)
 			{
 				messages.slowPrint("You've already cast a land this turn."+br);
 			} else {
 				castLand(1);
 			}
-		} else if(commandText.toLowerCase().startsWith("draw")) {
+		} else if(commandText.toLowerCase().startsWith("draw")) 
+		{
 			if(cardDrawn)
 			{
 				messages.slowPrint("You've already drawn a card this turn."+br);
 			} else {
 				drawCard(activePlayer);
 			}
-		} else if(commandText.toLowerCase().startsWith("attack")) {
+		} else if(commandText.toLowerCase().startsWith("attack")) 
+		{
 			commandText = commandText.substring(7,commandText.length());
 			if(!commandText.toLowerCase().startsWith(player[activePlayer].getName().toLowerCase()))
 			{
@@ -120,7 +235,11 @@ public class commands extends mainGame
 			} else {
 				messages.slowPrint("You cannot attack yourself!"+br);
 			}
-		} else {
+		} else if (commandText.toLowerCase().startsWith("show hand"))
+		{
+			displayHand(activePlayer);
+		} else 
+		{
 			messages.slowPrint("Command not recognized, try again?" + br);
 		}
 	}

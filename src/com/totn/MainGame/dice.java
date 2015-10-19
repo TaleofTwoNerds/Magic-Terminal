@@ -20,9 +20,9 @@ public class dice
 			side = 1;
 		}
 		System.out.println(side);
-		if((choice.startsWith("H")||choice.startsWith("h")) && side==0) {
+		if(choice.toLowerCase().startsWith("h") && side==0) {
 			value = true;
-		} else if((choice.startsWith("T")||choice.startsWith("t")) && side==1){
+		} else if(choice.toLowerCase().startsWith("t") && side==1){
 			value = true;
 		} else {
 			value = false;
@@ -84,5 +84,12 @@ public class dice
 		messages.slowPrint("Player " + winner + " won the dice toss!"+br);
 		
 		return winner;
+	}
+	
+	public static int randomCard()
+	{
+		int cardID=0;
+		cardID = 1 + (int)(Math.random() * (cardData.numCards));
+		return cardID;
 	}
 }

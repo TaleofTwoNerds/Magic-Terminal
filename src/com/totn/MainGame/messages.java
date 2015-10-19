@@ -30,24 +30,37 @@ public class messages extends mainGame
         }
     }
 	
+	public static void help(int type)
+	{
+	//	Type 0 = commands
+		if(type==0)
+		{
+			String[] help = new String [10];
+			help[0]="Draw - Draw a card";
+			help[1]="Cast land - Cast a land";
+			help[2]="Show hand- Shows current player's hand";
+			help[3]="Attack [Player Name] - Attacks target player";
+			help[4]="End - Ends turn";
+			for(int i=0;i<=4;i++)
+			{
+				slowPrint(help[i]);
+			}
+		}
+	}
+	
 	public static void creatorInfo()
 	{
 	// 	Information about me  because I'm vain
 		clearTerm();
 		slowPrint("Created by Blaine Harper"+br+br);
 		slowPrint("");
-		try
-		{
-			Thread.sleep(2000);
-			slowPrint("In Association with Tale of Two Nerds");
-			Thread.sleep(2000);
-			clearTerm();
-			slowPrint("Blaine Harper's"+br+br);
-			slowPrint("Magic: TG -  Terminal Edition");
-			Thread.sleep(4000);
-		} catch(InterruptedException e) { 
-   			Thread.currentThread().interrupt(); 
-		}
+		wait(2);
+		slowPrint("In Association with Tale of Two Nerds");
+		wait(2);
+		clearTerm();
+		slowPrint("Blaine Harper's"+br+br);
+		slowPrint("Magic: TG -  Terminal Edition");
+		wait(2);
 		clearTerm();
 	}
 	public static String playerList()

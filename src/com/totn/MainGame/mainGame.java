@@ -6,6 +6,8 @@ import java.util.Scanner;
 public class mainGame 
 { 	
 	public static Player[] player = new Player[10];
+	public static Card[] card = new Card[64];
+	
 	public static int[] playerHP = new int[5];
 	public static int players=4,activePlayer = 1,turn=0,
 				textSpeed=40,startingLife=20;
@@ -18,6 +20,7 @@ public class mainGame
 	{
 	//	Clear terminal and begin the game
 		clearTerm();
+		cardData.create();
 	//	messages.creatorInfo();
 		beginInput();
 		setupPlayers();
@@ -40,9 +43,9 @@ public class mainGame
 			if(players <= 1)
 			{
 				messages.slowPrint("You cannot have less that 2 players"+br);
-			} else if (players >= 4) 
+			} else if (players >= 5) 
 			{
-				messages.slowPrint("You cannot have more than 2 players"+br);
+				messages.slowPrint("You cannot have more than 4 players"+br);
 			} else {
 				break;
 			}
@@ -70,12 +73,13 @@ public class mainGame
 		messages.slowPrint(br);
 		messages.slowPrint("Welcome to the game " + messages.playerList());
 		messages.slowPrint(br + br + "Are these names correct (Yes/No)? ");
-		
-		if(user_input.nextLine().toLowerCase().startsWith("y"))
+				
+		for(i=0;i<7;i++)
 		{
-		
+			player[1].addCard(card[dice.randomCard()].getName());
 		}
-		else 
+		
+		if(!user_input.nextLine().toLowerCase().startsWith("y"))
 		{
 			setupPlayers();
 		}
@@ -86,12 +90,13 @@ public class mainGame
 		int beginner = dice.diceToss();
 		activePlayer = beginner;
 		messages.slowPrint(player[beginner].getName() + " goes FIRST" + br);
-		
+		wait(2);
 		clearTerm();
 		messages.slowPrint(player[activePlayer].getName() + "'s turn" + br);
 	}
 	public static void playerTurn()
 	{
+		messages.slowPrint("Current Life Total: "+player[activePlayer].getHP()+br);
 		
 	// 	Who is the ID of the player whose turn it currently is
 		if(!cardDrawn){commands.drawCard(activePlayer);}
@@ -111,7 +116,7 @@ public class mainGame
 	
 	public static class Player extends AbstractPlayer
 	{
-		public Player(String name, double HP)
+		public Player(String name, int HP)
 		{
 			super(name, HP);
 		}
