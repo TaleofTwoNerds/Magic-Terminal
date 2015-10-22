@@ -64,20 +64,20 @@ public class mainGame
 	public static void setupPlayers()
 	{
 		//	Setup the players in the game and put them into the array
-		int i;
-		for(i=1;i<=players;i++)
+		for(int i=1;i<=players;i++)
 		{	
 			messages.slowPrint("Player " + i + "'s Name: ");
 			player[i] = new Player(user_input.nextLine(),startingLife);
+					
+			for(int j=0;j<7;j++)
+			{
+				player[i].addCard(card[dice.randomCard()].getName());
+			}
 		}
 		messages.slowPrint(br);
 		messages.slowPrint("Welcome to the game " + messages.playerList());
 		messages.slowPrint(br + br + "Are these names correct (Yes/No)? ");
-				
-		for(i=0;i<7;i++)
-		{
-			player[1].addCard(card[dice.randomCard()].getName());
-		}
+		
 		
 		if(!user_input.nextLine().toLowerCase().startsWith("y"))
 		{
@@ -95,9 +95,7 @@ public class mainGame
 		messages.slowPrint(player[activePlayer].getName() + "'s turn" + br);
 	}
 	public static void playerTurn()
-	{
-		messages.slowPrint("Current Life Total: "+player[activePlayer].getHP()+br);
-		
+	{		
 	// 	Who is the ID of the player whose turn it currently is
 		if(!cardDrawn){commands.drawCard(activePlayer);}
 		System.out.print("> ");

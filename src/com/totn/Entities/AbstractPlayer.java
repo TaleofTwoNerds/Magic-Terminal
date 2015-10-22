@@ -1,8 +1,9 @@
 public abstract class AbstractPlayer implements Player {
 	
 	protected int HP;
-	protected int handSize=0;
-	protected String[] hand = new String[10];
+	protected int handSize=0,fieldSize=0;
+	protected Card[] fieldCard = new Card[10];
+	protected String[] hand = new String[10], field = new String[10];
 	protected String name;
 
 	public AbstractPlayer(String name, int HP) {
@@ -40,15 +41,31 @@ public abstract class AbstractPlayer implements Player {
 	
 	public void removeCard(String card)
 	{
-		for(int i=0;i<8;i++)
+		for(int i=0;i<getHandSize();i++)
 		{
 			if(hand[i].startsWith(card))
 			{
-				hand[i]=null;
+				hand[i]=hand[getHandSize()-1];
+				hand[getHandSize()-1]=null;
 				handSize-=1;
 				break;
 			}
 		}
+	}
+	
+	public void moveToField(Card card)
+	{
+		for (int i=0;i<9;i++)
+		{
+			if(fieldCard[i]==null)
+			{
+				fieldCard[i]=card;
+			//	field[i]=cardData.IDToCard(cardData.cardToID(card));
+				fieldSize++;
+				break;
+			}
+		}
+		removeCard(card.getName());
 	}
 	
 	public int getHP() 
@@ -60,12 +77,24 @@ public abstract class AbstractPlayer implements Player {
 	{
 		return name;
 	}
+	
 	public int getHandSize()
 	{
 		return handSize;
 	}
+	
+	public int getFieldSize()
+	{
+		return fieldSize;
+	}
+	
 	public String getHand(int position)
 	{
 		return hand[position];
+	}
+	
+	public Card getField(int position)
+	{
+		return fieldCard[position];
 	}
 }

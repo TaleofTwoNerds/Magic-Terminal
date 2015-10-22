@@ -30,6 +30,29 @@ public class messages extends mainGame
         }
     }
 	
+	public static String showLife()
+	{
+	//	Setup the list of players in the game
+		String value=null;
+		if (players==2)
+		{
+			value = player[1].getHP() + " and " 
+				+ player[2].getHP();
+		} else if (players==3)
+		{
+			value = player[1].getHP() + ", " 
+				+ player[2].getHP() + ", and " 
+				+ player[3].getHP();
+		} else if (players==4)
+		{
+			value = player[1].getHP() + ", " 
+				+ player[2].getHP() + ", " 
+				+ player[3].getHP() + ", and " 
+				+ player[4].getHP();
+		}
+		return "Total lives: "+value;
+	}
+	
 	public static void help(int type)
 	{
 	//	Type 0 = commands
@@ -43,7 +66,7 @@ public class messages extends mainGame
 			help[4]="End - Ends turn";
 			for(int i=0;i<=4;i++)
 			{
-				slowPrint(help[i]);
+				slowPrint(help[i]+br);
 			}
 		}
 	}

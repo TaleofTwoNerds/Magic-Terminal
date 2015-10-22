@@ -1,16 +1,17 @@
 public abstract class AbstractCard implements Card {
 	
-	protected boolean tap;
+	protected boolean tapped;
 	protected int CMC, power, toughness,ID;
-	protected String name, ability;
+	protected String name, ability,type;
 
-	public AbstractCard(String name, int ID, int CMC, 
+	public AbstractCard(int ID, String type, String name, int CMC, 
 					String ability, int power, int toughness) {
 		this.name = name;
 		this.ID = ID;
 		this.CMC = CMC;
 		this.power = power;
 		this.toughness = toughness;
+		this.type = type;
 		cardData.numCards++;
 	}
 	
@@ -39,6 +40,16 @@ public abstract class AbstractCard implements Card {
 	}
 	*/
 	
+	public void tap()
+	{
+		tapped=true;
+	}
+	
+	public void unTap()
+	{
+		tapped=false;
+	}
+	
 	public int getID() 
 	{
 		return ID;
@@ -54,7 +65,7 @@ public abstract class AbstractCard implements Card {
 		return power;
 	}
 	
-	public int getToughness() 
+	public int getToughness()
 	{
 		return toughness;
 	}
@@ -67,5 +78,15 @@ public abstract class AbstractCard implements Card {
 	public String getAbility()
 	{
 		return ability;
+	}
+	
+	public String getType()
+	{
+		return type;
+	}
+	
+	public boolean isTapped()
+	{
+		return tapped;
 	}
 }

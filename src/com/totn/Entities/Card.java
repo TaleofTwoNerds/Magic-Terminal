@@ -9,11 +9,14 @@ public interface Card {
 	public void setName(String name);
 	public void setAbility(String name);
 	*/
-	
+	public void tap();
+	public void unTap();
 	public int getID();
 	public int getCMC();
 	public int getPower();
 	public int getToughness();
 	public String getName();
 	public String getAbility();
+	public String getType();
+	public boolean isTapped();
 }
