@@ -1,6 +1,6 @@
 public abstract class AbstractCard implements Card {
 	
-	protected boolean tapped;
+	protected boolean tapped,summoned;
 	protected int CMC, power, toughness,ID;
 	protected String name, ability,type;
 
@@ -39,6 +39,15 @@ public abstract class AbstractCard implements Card {
 		this.name = name;
 	}
 	*/
+	public void summoned()
+	{
+		summoned=true;
+	}
+	
+	public void notSummoned()
+	{
+		summoned=false;
+	}
 	
 	public void tap()
 	{
@@ -88,5 +97,20 @@ public abstract class AbstractCard implements Card {
 	public boolean isTapped()
 	{
 		return tapped;
+	}
+	
+	public boolean wasSummoned()
+	{
+		return summoned;
+	}
+	
+	public boolean isLand()
+	{
+		if(type.toLowerCase().contains("land"))
+		{
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

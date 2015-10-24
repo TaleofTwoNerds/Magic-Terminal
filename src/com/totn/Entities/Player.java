@@ -10,5 +10,6 @@ public interface Player {
 	public String getHand(int position);
 	public int getHandSize();
 	public int getFieldSize();
+	public int getCreatures();
 	public Card getField(int position);
 }

@@ -97,7 +97,7 @@ public class mainGame
 	public static void playerTurn()
 	{		
 	// 	Who is the ID of the player whose turn it currently is
-		if(!cardDrawn){commands.drawCard(activePlayer);}
+		if(!cardDrawn&&turn!=0){commands.drawCard(activePlayer);}
 		System.out.print("> ");
 		String action = user_input.nextLine();
 		commands.checkForCommand(action);

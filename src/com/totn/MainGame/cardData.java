@@ -14,7 +14,11 @@ public class cardData extends mainGame
 		card[6] = new Card(6,"Creature","Striking Sliver",1,"",1,1);
 		card[7] = new Card(7,"Creature","Root Sliver",3,"",3,3);
 		card[8] = new Card(8,"Creature","Homing Sliver",1,"",1,1);
-		for(int i=9;i<=15;i++)
+		card[9] = new Card(9,"Creature","Copper Myr",3,"",2,1);
+		card[10] = new Card(10,"Creature","Firebrand",3,"",1,2);
+		card[11] = new Card(11,"Creature","Destroyer",5,"",5,2);
+		card[12] = new Card(12,"Creature","Flame On",3,"",2,2);
+		for(int i=13;i<=18;i++)
 		{
 			card[i] = new Card(i,"Land","Mountain",0,"",0,0);
 		}

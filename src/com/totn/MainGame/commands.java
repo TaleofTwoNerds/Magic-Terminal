@@ -20,7 +20,6 @@ public class commands extends mainGame
 			} else {
 				System.out.println(player[playerID].getHand(i));
 			}
-			
 		}
 	}
 	
@@ -28,20 +27,63 @@ public class commands extends mainGame
 	{
 		//	Display the current player's field and what they have.
 		System.out.println("You currently have "+targetPlayer.getFieldSize()+" cards in your battlefield");
+		System.out.println("- Lands -");
 		for(int i=0;i<targetPlayer.getFieldSize();i++)
 		{
-			if(targetPlayer.fieldCard[i].isTapped())
+			if(targetPlayer.fieldCard[i].getType().toLowerCase().contains("land"))
 			{
-				System.out.println(targetPlayer.getField(i).getName()+" (Tapped) ");
-			} else if(targetPlayer.getField(i).getType().toLowerCase().contains("creature"))
-			{
-			
-				System.out.println(targetPlayer.getField(i).getName() + " (" + targetPlayer.getField(i).getPower() + "/" + targetPlayer.getField(i).getToughness()+")");
-			} else 
-			{
-				System.out.println(targetPlayer.getField(i).getName());
+				if(targetPlayer.fieldCard[i].isTapped())
+				{
+					System.out.println(targetPlayer.getField(i).getName()+" (Tapped) ");
+				} else if(targetPlayer.getField(i).getType().toLowerCase().contains("creature"))
+				{
+					System.out.println(targetPlayer.getField(i).getName() + " (" + targetPlayer.getField(i).getPower() + "/" + targetPlayer.getField(i).getToughness()+")");
+				} else 
+				{
+					System.out.println(targetPlayer.getField(i).getName());
+				}
 			}
 		}
+		System.out.println("- Spells -");
+		for(int i=0;i<targetPlayer.getFieldSize();i++)
+		{
+			if(!targetPlayer.fieldCard[i].getType().toLowerCase().contains("land"))
+			{
+				if(targetPlayer.fieldCard[i].wasSummoned())
+				{
+					System.out.println(targetPlayer.getField(i).getName()+" (Summoned) ");
+				} else if(targetPlayer.fieldCard[i].isTapped())
+				{
+					System.out.println(targetPlayer.getField(i).getName()+" (Tapped) ");
+				} else if(targetPlayer.getField(i).getType().toLowerCase().contains("creature"))
+				{
+					System.out.println(targetPlayer.getField(i).getName() + " (" + targetPlayer.getField(i).getPower() + "/" + targetPlayer.getField(i).getToughness()+")");
+				} else 
+				{
+					System.out.println(targetPlayer.getField(i).getName());
+				}
+			}
+		}
+		for(int i=1;i<players;i++)
+		{
+			if(player[i]!=targetPlayer)
+			{
+				System.out.println(br+player[i].getName()+"'s field: ");
+				for(int j=0;j<player[i].getFieldSize();j++)
+				{
+					if(player[i].fieldCard[j].isTapped())
+					{
+						System.out.println(player[i].getField(j).getName()+" (Tapped) ");
+					} else if(player[i].getField(j).getType().toLowerCase().contains("creature"))
+					{
+						System.out.println(player[i].getField(j).getName() + " (" + player[i].getField(j).getPower() + "/" + player[i].getField(j).getToughness()+")");
+					} else 
+					{
+						System.out.println(player[i].getField(j).getName());
+					}
+				}
+			}
+		}	
 	}
 	public static void attack(String target)
 	{
@@ -151,7 +193,14 @@ public class commands extends mainGame
 		//	This gives the player the chance to back out when
 		//	Declaring which creatures to attack with.
 		
-		if(attacking){defend(player[targetID]);}
+		if(attacking && player[targetID].getCreatures()!=0){defend(player[targetID]);}
+		else if(attacking)
+		{
+			clearTerm();
+			messages.slowPrint(player[targetID].getName()+" cannot defend!");
+			wait(1);
+			dealDamage(player[targetID]);
+		}
 	}
 	
 	public static boolean[] defended = new boolean[10];
@@ -168,88 +217,93 @@ public class commands extends mainGame
 		{
 			messages.slowPrint(attackerName[i]+" ("+card[attackerID[i]].getPower()+"/"+card[attackerID[i]].getToughness()+")"+br);
 		}
-		messages.slowPrint("How do you respond?"+br);
-		messages.slowPrint("> ");
-		
-		String defense = user_input.nextLine();
-		if(defense.toLowerCase().startsWith("defend"))
+		if(true)
 		{
-			messages.slowPrint("You have chosen to defend"+br);
-			for(int i=1;i<=attackerNum;i++)
+			messages.slowPrint("How do you respond?"+br);
+			messages.slowPrint("> ");
+			
+			String defense = user_input.nextLine();
+			if(defense.toLowerCase().startsWith("defend"))
 			{
-				messages.slowPrint("With what do you defend "+card[attackerID[i]].getName()+"?"+br);
-				defenderName[i]=card[cardData.cardToID(user_input.nextLine())].getName();
-				if(defenderName[i].toLowerCase().startsWith("none")||defenderName[i].toLowerCase().contains("nothing"))
+				messages.slowPrint("You have chosen to defend"+br);
+				for(int i=1;i<=attackerNum;i++)
 				{
-					defenderName[i]=null;
-					defenderID[i]=0;
-					defended[i]=false;
-					System.out.println(i+" "+defended[i]);
-				} else {
-					defenderID[i]=cardData.cardToID(defenderName[i]);
-					defended[i]=true;
-				}
-				System.out.println(defended[i]);
-				if(defended[i])
-				{
-					if(card[defenderID[i]].getPower()>=card[attackerID[i]].getToughness()&&card[attackerID[i]].getPower()>=card[defenderID[i]].getPower())
+					messages.slowPrint("With what do you defend "+card[attackerID[i]].getName()+"?"+br);
+					defenderName[i]=card[cardData.cardToID(user_input.nextLine())].getName();
+					if(defenderName[i].toLowerCase().startsWith("none")||defenderName[i].toLowerCase().contains("nothing"))
 					{
-						winner[i]=0;
+						defenderName[i]=null;
+						defenderID[i]=0;
+						defended[i]=false;
+						System.out.println(i+" "+defended[i]);
 					} else {
-						if(card[defenderID[i]].getPower()>=card[attackerID[i]].getToughness())
+						defenderID[i]=cardData.cardToID(defenderName[i]);
+						defended[i]=true;
+					}
+					System.out.println(defended[i]);
+					if(defended[i])
+					{
+						if(card[defenderID[i]].getPower()>=card[attackerID[i]].getToughness()&&card[attackerID[i]].getPower()>=card[defenderID[i]].getPower())
 						{
-							winner[i]=1;
+							winner[i]=0;
 						} else {
-							winner[i]=2;
+							if(card[defenderID[i]].getPower()>=card[attackerID[i]].getToughness())
+							{
+								winner[i]=1;
+							} else {
+								winner[i]=2;
+							}
 						}
+						System.out.println(winner[i]);
 					}
-					System.out.println(winner[i]);
-				}
-				if(winner[i]==2)
-				{
-					for(int j=0;j<defender.getFieldSize();j++)
+					if(winner[i]==2)
 					{
-						if(defender.fieldCard[j].getID()==defenderID[i])
-						{							
-							System.out.println(defender.fieldCard[j].getName()+" was destroyed!");
-							defender.fieldCard[j]=null;
-						}
-					}
-				} else if(winner[i]==1)
-				{
-					for(int j=0;j<player[activePlayer].getFieldSize();j++)
-					{
-						if(player[activePlayer].fieldCard[j].getID()==attackerID[i])
+						for(int j=0;j<defender.getFieldSize();j++)
 						{
-							System.out.println(player[activePlayer].fieldCard[j].getName()+" was destroyed!");
-							player[activePlayer].fieldCard[j]=null;
-							wait(1);
+							if(defender.fieldCard[j].getID()==defenderID[i])
+							{							
+								System.out.println(defender.fieldCard[j].getName()+" was destroyed!");
+								defender.fieldCard[j]=null;
+							}
 						}
-					}
-				} else if(winner[i]==0)
-				{
-					for(int j=0;j<player[activePlayer].getFieldSize();j++)
+					} else if(winner[i]==1)
 					{
-						if(player[activePlayer].fieldCard[j].getID()==attackerID[i])
+						for(int j=0;j<player[activePlayer].getFieldSize();j++)
 						{
-							System.out.println(player[activePlayer].fieldCard[j].getName()+" was destroyed!");
-							player[activePlayer].fieldCard[player[activePlayer].getFieldSize()]=player[activePlayer].fieldCard[j];
-							player[activePlayer].fieldCard[player[activePlayer].getFieldSize()]=null;
-							player[activePlayer].fieldSize-=1;
-							wait(1);
+							if(player[activePlayer].fieldCard[j].getID()==attackerID[i])
+							{
+								System.out.println(player[activePlayer].fieldCard[j].getName()+" was destroyed!");
+								player[activePlayer].fieldCard[j]=null;
+								wait(1);
+							}
 						}
-					}
-					for(int j=0;j<defender.getFieldSize();j++)
+					} else if(winner[i]==0)
 					{
-						if(defender.fieldCard[j].getID()==defenderID[i])
-						{							
-							System.out.println(defender.fieldCard[j].getName()+" was destroyed!");
-							defender.fieldCard[j]=null;
+						for(int j=0;j<player[activePlayer].getFieldSize();j++)
+						{
+							if(player[activePlayer].fieldCard[j].getID()==attackerID[i])
+							{
+								System.out.println(player[activePlayer].fieldCard[j].getName()+" was destroyed!");
+								player[activePlayer].fieldCard[player[activePlayer].getFieldSize()]=player[activePlayer].fieldCard[j];
+								player[activePlayer].fieldCard[player[activePlayer].getFieldSize()]=null;
+								player[activePlayer].fieldSize-=1;
+								wait(1);
+							}
 						}
+						for(int j=0;j<defender.getFieldSize();j++)
+						{
+							if(defender.fieldCard[j].getID()==defenderID[i])
+							{							
+								System.out.println(defender.fieldCard[j].getName()+" was destroyed!");
+								defender.fieldCard[defender.getFieldSize()]=defender.fieldCard[j];
+								defender.fieldCard[defender.getFieldSize()]=null;
+								defender.fieldSize-=1;
+							}
+						}
+					} else
+					{
+						messages.slowPrint("Nobody died. :("+br);
 					}
-				} else
-				{
-					messages.slowPrint("Nobody died. :("+br);
 				}
 			}
 		}
@@ -287,26 +341,33 @@ public class commands extends mainGame
 		boolean canAfford=true;
 		int[] manaToTap = new int[10], manaPos = new int[10];
 		int numToTap=0,totalMana=0,numTapped=0,tapping=0;
-		
 		int spellID = cardData.cardToID(spellName),cardPos=0;
+		
 		if(spellID!=0)
 		{
+		//	Check weather the card is a land or not
 			if(card[spellID].getType().toLowerCase().contains("land"))
 			{
+			//	Check all cards in hand
 				for(int i=0;i<player[activePlayer].getHandSize();i++)
 				{
+				//	Unless that slot's empty (To avoid nullPointerErroers)
 					if(!player[activePlayer].getHand(i).contains("null")) 
 					{
+					//	If that hand spot is the spell they're trying to cast
 						if(player[activePlayer].getHand(i).toLowerCase().contains(spellName.toLowerCase()))
 						{
+						//	Tell the program where that card is in their hand
 							inHand = true;
 							cardPos=i;
+						//	Stop the loop and continue on
 							break;
 						}
 					}
 				}
 			} else if (!card[spellID].getType().toLowerCase().contains("land")) 
 			{
+			//	If their spell they're trying to cast is not a land
 				canAfford = false;
 				numToTap = card[spellID].getCMC();
 				
@@ -334,7 +395,10 @@ public class commands extends mainGame
 					}
 					if(totalMana>=numToTap)
 					{
+					//	If the player has more mana than they need to cast it
 						canAfford=true;
+					//	Checks the field to find out where your mana is and then it
+					//	puts it into the manaPos array for use later
 						for(int i=1;i<=player[activePlayer].getFieldSize();i++)
 						{
 							if(player[activePlayer].fieldCard[i-1].getType().toLowerCase().contains("land")&&!player[activePlayer].fieldCard[i-1].isTapped())
@@ -342,23 +406,44 @@ public class commands extends mainGame
 								manaPos[tapping]=i;
 							}
 						}
-						for(int j=0;j<numToTap;j++)
+					//	Goes ahead and taps that mana for you
+						int haveTapped=1;
+						System.out.println("Pre-FOR");
+						for(int j=0;j<player[activePlayer].getFieldSize();j++)
 						{
-							player[activePlayer].fieldCard[manaPos[j+1]].tap();
+							System.out.println("FOR: "+j);
+							if(player[activePlayer].fieldCard[j].getType().toLowerCase().contains("land"))
+							{
+								System.out.println("Found a land");
+								System.out.println("You need "+numToTap);
+								player[activePlayer].fieldCard[j].tap();
+								haveTapped++;
+								if(haveTapped==numToTap)
+								{
+									System.out.println("Tapped enough");
+									break;
+								}
+							}
+					//		player[activePlayer].fieldCard[manaPos[j]].tap();
 						}
 					}
 				}
 			}
 			if(!inHand)
 			{
+			//	If you don't have it in your hand
 				messages.slowPrint("It appears you don't pocess this spell"+br);
 			} else if (!canAfford)
 			{
+			//	If you don't have the mana to cast it
 				messages.slowPrint("It appears you can't afford this spell"+br);
 			} else 
 			{
+			//	You do have it and you can cast it
 				if (card[spellID].getType().toLowerCase().contains("land")&&!landCasted)
 				{
+				//	If it's a land then you check whether or not you've cast a land
+				//	Then it goes ahead and casts it.
 					messages.slowPrint("You played a land" + br);
 					player[activePlayer].moveToField(card[cardData.cardToID(spellName)]);
 					landCasted=true;
@@ -368,6 +453,7 @@ public class commands extends mainGame
 				
 				if (!card[spellID].getType().toLowerCase().contains("land"))
 				{
+				//	If the card you are casting is not a land
 					messages.slowPrint("You cast the spell" +br);
 					player[activePlayer].moveToField(card[cardData.cardToID(spellName)]);
 				}
@@ -507,17 +593,25 @@ public class commands extends mainGame
 			displayHand(activePlayer);
 		} else if (commandText.toLowerCase().startsWith("show")&&commandText.toLowerCase().contains("field"))
 		{
-		//	Check for a command similar to Show and a possible math with field, battlfiend, anything containing field.
+		//	Check for a command similar to Show and a possible match with field, battlfiend, anything containing field.
 			displayField(player[activePlayer]);
 		} else if (commandText.toLowerCase().startsWith("show")&&commandText.toLowerCase().contains("life"))
 		{
-		//	Check for a command similar to Show and a possible math with field, battlfiend, anything containing field.
-			messages.slowPrint(br+messages.showLife()+br);
+		//	Check for a command similar to Show and a possible life
+			messages.showLife();
 		} else if (commandText.toLowerCase().contains("cast"))
 		{
 		//	Check for a command similar to cast [spell]
 			commandText = commandText.substring(5,commandText.length());
 			castSpell(commandText);
+		} else if (commandText.toLowerCase().contains("describe"))
+		{
+		//	Check for a command similar to cast [spell]
+			commandText = commandText.substring(9,commandText.length());
+			if(cardData.cardToID(commandText)!=0)
+			{
+				messages.cardInfo(card[cardData.cardToID(commandText)]);
+			}
 		} else if (commandText.toLowerCase().contains("remove"))
 		{
 		//	Check for a command similar to remove [spell]

@@ -9,6 +9,8 @@ public interface Card {
 	public void setName(String name);
 	public void setAbility(String name);
 	*/
+	public void summoned();
+	public void notSummoned();
 	public void tap();
 	public void unTap();
 	public int getID();
@@ -19,4 +21,6 @@ public interface Card {
 	public String getAbility();
 	public String getType();
 	public boolean isTapped();
+	public boolean wasSummoned();
+	public boolean isLand();
 }

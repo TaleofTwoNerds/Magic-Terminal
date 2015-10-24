@@ -30,27 +30,30 @@ public class messages extends mainGame
         }
     }
 	
-	public static String showLife()
+	public static void showLife()
 	{
 	//	Setup the list of players in the game
 		String value=null;
-		if (players==2)
+		for(int i=1;i<=players;i++)
 		{
-			value = player[1].getHP() + " and " 
-				+ player[2].getHP();
-		} else if (players==3)
-		{
-			value = player[1].getHP() + ", " 
-				+ player[2].getHP() + ", and " 
-				+ player[3].getHP();
-		} else if (players==4)
-		{
-			value = player[1].getHP() + ", " 
-				+ player[2].getHP() + ", " 
-				+ player[3].getHP() + ", and " 
-				+ player[4].getHP();
+			System.out.println(player[i].getName()+": "+player[i].getHP());
 		}
-		return "Total lives: "+value;
+	}
+	
+	public static void cardInfo(Card card)
+	{
+		System.out.println("Name: "+card.getName());
+		if(!card.isLand())
+		{
+			System.out.println("P/T: ("+card.getPower()+"/"+card.getToughness()+")");
+		}
+		if(card.getAbility()!=null)
+		{
+			System.out.println("Ability: "+card.getAbility());
+		}
+		System.out.println("Cost: "+card.getCMC());
+		System.out.println("Type: "+card.getType());
+		System.out.println("ID: "+card.getID());
 	}
 	
 	public static void help(int type)
@@ -60,11 +63,12 @@ public class messages extends mainGame
 		{
 			String[] help = new String [10];
 			help[0]="Draw - Draw a card";
-			help[1]="Cast land - Cast a land";
+			help[1]="Cast [Spell Name] - Cast a spell";
 			help[2]="Show hand- Shows current player's hand";
 			help[3]="Attack [Player Name] - Attacks target player";
 			help[4]="End - Ends turn";
-			for(int i=0;i<=4;i++)
+			help[5]="Describe [Card Name] - Gives data for specified card";
+			for(int i=0;i<=5;i++)
 			{
 				slowPrint(help[i]+br);
 			}

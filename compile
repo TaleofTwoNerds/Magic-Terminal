@@ -1,6 +1,6 @@
 #/bin/bash
 
 echo [DIRTY] Compiling
-javac -d bin ./src/com/totn/MainGame/*.java
+javac -d bin ./src/com/totn/*/*.java
 echo [DIRTY] Compiled to ~/java/Magic-Terminal/bin
 

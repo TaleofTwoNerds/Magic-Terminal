@@ -60,6 +60,15 @@ public abstract class AbstractPlayer implements Player {
 			if(fieldCard[i]==null)
 			{
 				fieldCard[i]=card;
+				if(fieldCard[i].getType().toLowerCase().contains("creature"))
+				{
+					System.out.println("Creature has summoning sickness");
+					fieldCard[i].summoned();
+				} else if(fieldCard[i].getType().toLowerCase().contains("land"))
+				{	
+					System.out.println("Land is untapped");
+					fieldCard[i].unTap();
+				}
 			//	field[i]=cardData.IDToCard(cardData.cardToID(card));
 				fieldSize++;
 				break;
@@ -96,5 +105,18 @@ public abstract class AbstractPlayer implements Player {
 	public Card getField(int position)
 	{
 		return fieldCard[position];
+	}
+	
+	public int getCreatures()
+	{
+		int numOfCreat=0;
+		for(int i=0;i<getFieldSize();i++)
+		{
+			if(fieldCard[i].getType().toLowerCase().contains("creature"))
+			{
+				numOfCreat++;
+			}
+		}
+		return numOfCreat++;
 	}
 }
